@@ -1,0 +1,998 @@
+      PlantUML 을사용해서 UML 그리기
+
+
+
+
+                               PlantUML 언어참조가이드
+                                       (Version 1.2019.9)
+
+
+
+
+PlantUML 은다이어그램을빠르게작성하기위한오픈소스프로젝트입니다.
+ • 시퀀스다이어그램
+ • 유즈케이스다이어그램
+ • 클래스다이어그램
+ • 액티비티다이어그램
+ • 컴포넌트다이어그램
+ • 상태다이어그램
+ • 객체다이어그램
+ • Deployment diagram
+ • Timing diagram
+다음의 UML 이외의다이어그램도지원함:
+ • Wireframe graphical interface
+ • Archimate diagram
+ • Specification and Description Language (SDL)
+ • Ditaa diagram
+ • Gantt diagram
+ • MindMap diagram
+ • Work Breakdown Structure diagram
+ • Mathematic with AsciiMath or JLaTeXMath notation
+간단하고직관적인언어를사용해다이어그램을정의할수있습니다.
+                                                 1   시퀀스다이어그램
+
+
+
+1      시퀀스다이어그램
+
+1.1     기본예제
+시퀀스 -> 는두참여자들사이의메시지를그리기위해사용된다. 참여자들은명시적으로선언하지않아도된
+다.
+점선화살표를만들기위해서는 --> 를사용한다.
+또한 <-과 <--를사용할수있다. 출력되는그림은변경되지않지만, 가독성을향상시키는데사용할수있다.
+이는시퀀스다이어그램에만적용되며, 다른다이어그램에는다른규칙이적용된다.
+@startuml
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
+
+Alice -> Bob: Another authentication Request
+Alice <-- Bob: another authentication Response
+@enduml
+
+
+
+
+1.2     참여자 (participant) 선언
+participant 키워드를이용하여참여자의순서를바꿀수있다.
+또한, 참여자선언에다음과같은키워드를사용할수있다.
+      • actor
+      • boundary
+      • control
+      • entity
+      • database
+@startuml
+actor Foo1
+boundary Foo2
+control Foo3
+entity Foo4
+database Foo5
+collections Foo6
+Foo1 -> Foo2 : To   boundary
+Foo1 -> Foo3 : To   control
+Foo1 -> Foo4 : To   entity
+Foo1 -> Foo5 : To   database
+Foo1 -> Foo6 : To   collections
+
+@enduml
+
+
+
+        PlantUML 언어참조가이드 (1.2019.9)                       1 / 171
+1.2 참여자 (participant) 선언                                   1   시퀀스다이어그램
+
+
+
+
+as 키워드를이용하여참여자의이름을변경할수있다.
+또한, 참여자 (actor, participant) 의배경색을변경할수도있다.
+@startuml
+actor Bob #red
+' The only difference between actor
+'and participant is the drawing
+participant Alice
+participant "I have a really\nlong name" as L #99FF99
+/' You can also declare:
+   participant L as "I have a really\nlong name" #99FF99
+  '/
+
+Alice->Bob: Authentication Request
+Bob->Alice: Authentication Response
+Bob->L: Log transaction
+@enduml
+
+
+
+
+order 키워드를이용하여, 참여자의출력순서를지정할수있다.
+@startuml
+participant Last order 30
+participant Middle order 20
+participant First order 10
+@enduml
+
+
+
+
+     PlantUML 언어참조가이드 (1.2019.9)                                    2 / 171
+1.3 참여자에서특수문자사용하기                                                   1   시퀀스다이어그램
+
+
+
+
+1.3    참여자에서특수문자사용하기
+따옴표를사용하여참여자를정의할수있다. 그리고"as" 키워드를사용하여참여자를별칭으로사용할수도
+있다.
+@startuml
+Alice -> "Bob()" : Hello
+"Bob()" -> "This is very\nlong" as Long
+' You can also declare:
+' "Bob()" -> Long as "This is very\nlong"
+Long --> "Bob()" : ok
+@enduml
+
+
+
+
+1.4    자신에게메시지보내기
+참여자는자기자신에게메시지를보낼수있다.
+\n 을이용해서여러줄로쓰는것도가능하다
+@startuml
+Alice->Alice: This is a signal to self.\nIt also demonstrates\nmultiline \ntext
+@enduml
+
+
+
+
+1.5    화살표스타일변경
+다음방법으로화살표스타일을바꿀수있다:
+      • 끝부분에 x 를추가하여메시지가전달되지않았음을표시할수있다.
+      • < 나 > 대신에 \ 나 / 를사용해서
+      • 아래쪽이나위쪽화살표만표시한다.
+
+
+       PlantUML 언어참조가이드 (1.2019.9)                                                3 / 171
+1.6 화살표색상변경                                    1   시퀀스다이어그램
+
+
+      • {$>$} 를두번사용하여화살표모양을얇게표시할수있다. (예. >>)
+      • - 대신 -- 를사용해서점선화살표를표시한다.
+      • 화살표다음에"o" 추가도가능하다.
+      • 양쪽끝에화살표추가도가능하다.
+@startuml
+Bob ->x Alice
+Bob -> Alice
+Bob ->> Alice
+Bob -\ Alice
+Bob \\- Alice
+Bob //-- Alice
+
+Bob ->o Alice
+Bob o\\-- Alice
+
+Bob <-> Alice
+Bob <->o Alice
+@enduml
+
+
+
+
+1.6    화살표색상변경
+다음의표기법을이용해서각각화살표의색상을바꿀수있다.
+@startuml
+Bob -[#red]> Alice : hello
+Alice -[#0000FF]->Bob : ok
+@enduml
+
+
+
+
+1.7    메시지순서에번호매기기
+autonumber 키워드는메시지에자동으로번호를매길때에사용한다.
+@startuml
+autonumber
+Bob -> Alice : Authentication Request
+
+
+       PlantUML 언어참조가이드 (1.2019.9)                      4 / 171
+1.7 메시지순서에번호매기기                                      1   시퀀스다이어그램
+
+
+Bob <- Alice : Authentication Response
+@enduml
+
+
+
+
+autonumber 시작번호의형태로표시하면특정번호로시작할수있으며, autonumber 시작번호 증가값으로
+표시할경우증가값을조정하는것도가능하다.
+@startuml
+autonumber
+Bob -> Alice : Authentication Request
+Bob <- Alice : Authentication Response
+
+autonumber 15
+Bob -> Alice : Another authentication Request
+Bob <- Alice : Another authentication Response
+
+autonumber 40 10
+Bob -> Alice : Yet another authentication Request
+Bob <- Alice : Yet another authentication Response
+
+@enduml
+
+
+
+
+쌍따옴표를이용하여표시형식을바꿀수도있다.
+표시형식은자바클래스 DecimalFormat 을사용한다. (0 은숫자를의미하며, # 은숫자로표시하되, 빈자리
+이면 0 으로채우라는뜻이다).
+몇가지 html 태그를사용할수있다.
+@startuml
+autonumber "<b>[000]"
+Bob -> Alice : Authentication Request
+Bob <- Alice : Authentication Response
+
+autonumber 15 "<b>(<u>##</u>)"
+Bob -> Alice : Another authentication Request
+Bob <- Alice : Another authentication Response
+
+autonumber 40 10 "<font color=red><b>Message 0 "
+Bob -> Alice : Yet another authentication Request
+
+
+     PlantUML 언어참조가이드 (1.2019.9)                              5 / 171
+1.7 메시지순서에번호매기기                                          1   시퀀스다이어그램
+
+
+Bob <- Alice : Yet another authentication Response
+
+@enduml
+
+
+
+
+또한, autonumber stop 키워드를이용하여번호매김을일시정지할수있으며, autonumber resume 증가값
+표시형식키워드를이용하여계속해서번호를매길수있다.
+@startuml
+autonumber 10 10 "<b>[000]"
+Bob -> Alice : Authentication Request
+Bob <- Alice : Authentication Response
+
+autonumber stop
+Bob -> Alice : dummy
+
+autonumber resume "<font color=red><b>Message 0 "
+Bob -> Alice : Yet another authentication Request
+Bob <- Alice : Yet another authentication Response
+
+autonumber stop
+Bob -> Alice : dummy
+
+autonumber resume 1 "<font color=blue><b>Message 0   "
+Bob -> Alice : Yet another authentication Request
+Bob <- Alice : Yet another authentication Response
+@enduml
+
+
+
+
+     PlantUML 언어참조가이드 (1.2019.9)                                  6 / 171
+1.8 페이지제목, 머리말과꼬리말                              1   시퀀스다이어그램
+
+
+1.8   페이지제목, 머리말과꼬리말
+title 키워드를이용하여페이지에제목을추가할수있다.
+또한, header 와 footer 를이용하여, 각각머리말과꼬리말을표시할수도있다.
+@startuml
+
+header Page Header
+footer Page %page% of %lastpage%
+
+title Example Title
+
+Alice -> Bob : message 1
+Alice -> Bob : message 2
+
+@enduml
+
+
+
+
+1.9   다이어그램분리
+newpage 키워드를이용하여, 다이어그램을여러개의이미지로분리할수있다.
+newpage 키워드뒤에바로새로생성되는페이지의제목을넣을수있다.
+여러페이지에걸쳐있는긴다이어그램을출력할때유용하다.
+(주: 예제에서첫번째페이지만표시되었지만, 실제로잘동작하는기능이다.)
+@startuml
+
+Alice -> Bob : message 1
+Alice -> Bob : message 2
+
+newpage
+
+Alice -> Bob : message 3
+Alice -> Bob : message 4
+
+newpage A title for the\nlast page
+
+Alice -> Bob : message 5
+Alice -> Bob : message 6
+@enduml
+
+
+
+
+      PlantUML 언어참조가이드 (1.2019.9)                        7 / 171
+1.10 메세지그룹화                             1   시퀀스다이어그램
+
+
+
+
+1.10 메세지그룹화
+다음과같은키워드들을사용하여메세지를그룹화할수있다:
+   • alt/else
+   • opt
+   • loop
+   • par
+   • break
+   • critical
+   • group, 화면에보여질텍스트
+헤더에표시될텍스트를추가할수있다. (group 제외).
+end 키워드는그룹을닫는데사용한다.
+또한, 그룹을중첩해서만들수도있다.
+@startuml
+Alice -> Bob: Authentication Request
+
+alt successful case
+
+Bob -> Alice: Authentication Accepted
+
+else some kind of failure
+
+Bob -> Alice: Authentication Failure
+group My own label
+Alice -> Log : Log attack start
+    loop 1000 times
+        Alice -> Bob: DNS Attack
+    end
+Alice -> Log : Log attack end
+end
+
+else Another type of failure
+
+  Bob -> Alice: Please repeat
+
+end
+@enduml
+
+
+
+
+     PlantUML 언어참조가이드 (1.2019.9)                 8 / 171
+1.11 메시지에노트추가하기                                 1   시퀀스다이어그램
+
+
+
+
+1.11 메시지에노트추가하기
+메시지다음에 note left 나 note right 키워드를이용하여, 메시지에노트를추가할수있다.
+또한, 한번에여러줄의노트를추가하는경우에는 end note 를이용하여, 노트의끝을표시해주어야한다.
+@startuml
+Alice->Bob : hello
+note left: this is a first note
+
+Bob->Alice : ok
+note right: this is another note
+
+Bob->Bob : I am thinking
+note left
+a note
+can also be defined
+on several lines
+end note
+@enduml
+
+
+
+
+     PlantUML 언어참조가이드 (1.2019.9)                         9 / 171
+1.12 다른형태의노트들                                                       1   시퀀스다이어그램
+
+
+1.12 다른형태의노트들
+note left of , note right of, note over 키워드를이용하여참여자의상대적인위치에노트를추가할수
+도있다.
+노트의배경색을변경함으로써, 노트를강조하는것도가능하다.
+한번에여러줄의노트를추가하는경우에는, end note 를이용하여노트의끝을표시해주어야한다.
+@startuml
+participant Alice
+participant Bob
+note left of Alice #aqua
+This is displayed
+left of Alice.
+end note
+
+note right of Alice: This is displayed right of Alice.
+
+note over Alice: This is displayed over Alice.
+
+note over Alice, Bob #FFAAAA: This is displayed\n over Bob and Alice.
+
+note over Bob, Alice
+This is yet another
+example of
+a long note.
+end note
+@enduml
+
+
+
+
+1.13 노트모양바꾸기
+hnote 와 rnote 키워드를이용하여, 노트의모양을바꿀수있다.
+@startuml
+caller -> server : conReq
+hnote over caller : idle
+caller <- server : conConf
+rnote over server
+ "r" as rectangle
+ "h" as hexagon
+
+
+     PlantUML 언어참조가이드 (1.2019.9)                                            10 / 171
+1.14 Creole 과 HTML                                              1   시퀀스다이어그램
+
+
+endrnote
+@enduml
+
+
+
+
+1.14 Creole 과 HTML
+creole 문법을사용할수도있다:
+@startuml
+participant Alice
+participant "The **Famous** Bob" as Bob
+
+Alice -> Bob : hello --there--
+... Some ~~long delay~~ ...
+Bob -> Alice : ok
+note left
+  This is **bold**
+  This is //italics//
+  This is ""monospaced""
+  This is --stroked--
+  This is __underlined__
+  This is ~~waved~~
+end note
+
+Alice -> Bob : A //well formatted// message
+note right of Alice
+ This is <back:cadetblue><size:18>displayed</size></back>
+ __left of__ Alice.
+end note
+note left of Bob
+ <u:red>This</u> is <color #118888>displayed</color>
+ **<color purple>left of</color> <s:red>Alice</strike> Bob**.
+end note
+note over Alice, Bob
+ <w:#FF33FF>This is hosted</w> by <img sourceforge.jpg>
+end note
+@enduml
+
+
+
+
+     PlantUML 언어참조가이드 (1.2019.9)                                        11 / 171
+1.15 구분자                                         1   시퀀스다이어그램
+
+
+
+
+1.15 구분자
+== 구분자를이용하여, 다이어그램을논리적인단계로구분하여나눌수있다.
+@startuml
+
+== Initialization ==
+
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
+
+== Repetition ==
+
+Alice -> Bob: Another authentication Request
+Alice <-- Bob: another authentication Response
+
+@enduml
+
+
+
+
+     PlantUML 언어참조가이드 (1.2019.9)                         12 / 171
+1.16 참조                                  1   시퀀스다이어그램
+
+
+
+
+1.16 참조
+ref over 키워드를이용하여, 다이어그램에참조를표시할수있다.
+@startuml
+participant Alice
+actor Bob
+
+ref over Alice, Bob : init
+
+Alice -> Bob : hello
+
+ref over Bob
+  This can be on
+  several lines
+end ref
+@enduml
+
+
+
+
+1.17 지연
+... 을이용하여, 다이어그램에지연상태를나타낼수있으며, 그위에메시지를추가할수도있다.
+@startuml
+
+
+
+     PlantUML 언어참조가이드 (1.2019.9)                 13 / 171
+1.18 공백                                  1   시퀀스다이어그램
+
+
+Alice -> Bob: Authentication Request
+...
+Bob --> Alice: Authentication Response
+...5 minutes latter...
+Bob --> Alice: Bye !
+
+@enduml
+
+
+
+
+1.18 공백
+||| 을이용하여다이어그램에공백을나타낼수있으며, 공백에얼마만큼의픽셀을사용할것인지숫자로명시
+할수도있다.
+@startuml
+
+Alice -> Bob: message 1
+Bob --> Alice: ok
+|||
+Alice -> Bob: message 2
+Bob --> Alice: ok
+||45||
+Alice -> Bob: message 3
+Bob --> Alice: ok
+
+@enduml
+
+
+
+
+     PlantUML 언어참조가이드 (1.2019.9)                 14 / 171
+1.19 생명선활성화및비활성화                              1   시퀀스다이어그램
+
+
+1.19 생명선활성화및비활성화
+activate 와 deactivate 는참여자의활성화여부를표현하는데사용한다.
+참여자가활성화되면, 참여자의생명선이나타난다.
+activate 와 deactivate 는바로이전의메시지에적용된다.
+destroy 는참여자의생명선이끝났음을표현한다.
+@startuml
+participant User
+
+User -> A: DoWork
+activate A
+
+A -> B: << createRequest >>
+activate B
+
+B -> C: DoWork
+activate C
+C --> B: WorkDone
+destroy C
+
+B --> A: RequestCreated
+deactivate B
+
+A -> User: Done
+deactivate A
+
+@enduml
+
+
+
+
+생명선은중첩해서사용할수있으며, 생명선에색을넣을수도있다.
+@startuml
+participant User
+
+User -> A: DoWork
+activate A #FFBBBB
+
+A -> A: Internal call
+activate A #DarkSalmon
+
+A -> B: << createRequest >>
+activate B
+
+B --> A: RequestCreated
+
+
+     PlantUML 언어참조가이드 (1.2019.9)                      15 / 171
+1.20 리턴                                  1   시퀀스다이어그램
+
+
+deactivate   B
+deactivate   A
+A -> User:   Done
+deactivate   A
+
+@enduml
+
+
+
+
+1.20 리턴
+리턴메시지를생성하는 return 명령이추가되었다. 리턴되는지점은가장최근에생명선을활성화시킨지점
+의출발점이된다. 문법은간단히 return 꼬리표이며, 꼬리표는기존의메시지와마찬가지로임의의문자열
+을쓸수있다.
+@startuml
+Bob -> Alice : hello
+activate Alice
+Alice -> Alice : some action
+return bye
+@enduml
+
+
+
+
+1.21 참여자생성
+해당메시지가실제로새객체를 생성한다는걸강조하기위해, 참여자가첫번째메시지를수신하기전에
+create 키워드를사용할수있다.
+@startuml
+Bob -> Alice : hello
+
+create Other
+Alice -> Other : new
+
+create control String
+Alice -> String
+note right : You can also put notes!
+
+
+     PlantUML 언어참조가이드 (1.2019.9)                 16 / 171
+1.22 Incoming and outgoing messages                                                      1   시퀀스다이어그램
+
+
+
+
+Alice --> Bob : ok
+
+@enduml
+
+
+
+
+1.22 Incoming and outgoing messages
+You can use incoming or outgoing arrows if you want to focus on a part of the diagram.
+Use square brackets to denote the left "[" or the right "]" side of the diagram.
+@startuml
+[-> A: DoWork
+
+activate A
+
+A -> A: Internal call
+activate A
+
+A ->] : << createRequest >>
+
+A<--] : RequestCreated
+deactivate A
+[<- A: Done
+deactivate A
+@enduml
+
+
+
+
+You can also have the following syntax:
+@startuml
+[-> Bob
+
+
+       PlantUML 언어참조가이드 (1.2019.9)                                                               17 / 171
+1.23 Stereotypes and Spots                                                                1   시퀀스다이어그램
+
+
+[o-> Bob
+[o->o Bob
+[x-> Bob
+
+[<- Bob
+[x<- Bob
+
+Bob   ->]
+Bob   ->o]
+Bob   o->o]
+Bob   ->x]
+
+Bob <-]
+Bob x<-]
+@enduml
+
+
+
+
+1.23 Stereotypes and Spots
+It is possible to add stereotypes to participants using << and >>.
+In the stereotype, you can add a spotted character in a colored circle using the syntax (X,color).
+@startuml
+
+participant "Famous Bob" as Bob << Generated >>
+participant Alice << (C,#ADD1B2) Testable >>
+
+Bob->Alice: First message
+
+@enduml
+
+
+
+
+By default, the guillemet character is used to display the stereotype. You can change this behavious using the
+skinparam guillemet:
+@startuml
+
+skinparam guillemet false
+
+
+       PlantUML 언어참조가이드 (1.2019.9)                                                                    18 / 171
+1.24 More information on titles                            1   시퀀스다이어그램
+
+
+participant "Famous Bob" as Bob << Generated >>
+participant Alice << (C,#ADD1B2) Testable >>
+
+Bob->Alice: First message
+
+@enduml
+
+
+
+
+@startuml
+
+participant Bob << (C,#ADD1B2) >>
+participant Alice << (C,#ADD1B2) >>
+
+Bob->Alice: First message
+
+@enduml
+
+
+
+
+1.24 More information on titles
+You can use creole formatting in the title.
+@startuml
+
+title __Simple__ **communication** example
+
+Alice -> Bob: Authentication Request
+Bob -> Alice: Authentication Response
+
+@enduml
+
+
+
+
+You can add newline using \n in the title description.
+@startuml
+
+title __Simple__ communication example\non several lines
+
+
+       PlantUML 언어참조가이드 (1.2019.9)                                 19 / 171
+1.25 Participants encompass                                                              1   시퀀스다이어그램
+
+
+
+
+Alice -> Bob: Authentication Request
+Bob -> Alice: Authentication Response
+
+@enduml
+
+
+
+
+You can also define title on several lines using title and end title keywords.
+@startuml
+
+title
+ <u>Simple</u> communication example
+ on <i>several</i> lines and using <font color=red>html</font>
+ This is hosted by <img:sourceforge.jpg>
+end title
+
+Alice -> Bob: Authentication Request
+Bob -> Alice: Authentication Response
+
+@enduml
+
+
+
+
+1.25 Participants encompass
+It is possible to draw a box around some participants, using box and end box commands.
+You can add an optional title or a optional background color, after the box keyword.
+@startuml
+
+box "Internal Service" #LightBlue
+participant Bob
+participant Alice
+end box
+participant Other
+
+Bob -> Alice : hello
+
+
+       PlantUML 언어참조가이드 (1.2019.9)                                                               20 / 171
+1.26 Removing Footer                                                                1   시퀀스다이어그램
+
+
+Alice -> Other : hello
+
+@enduml
+
+
+
+
+1.26 Removing Footer
+You can use the hide footbox keywords to remove the footer of the diagram.
+@startuml
+
+hide footbox
+title Footer removed
+
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
+
+@enduml
+
+
+
+
+1.27 Skinparam
+You can use the skinparam command to change colors and fonts for the drawing.
+You can use this command:
+    • In the diagram definition, like any other commands,
+    • In an included file,
+    • In a configuration file, provided in the command line or the ANT task.
+You can also change other rendering parameter, as seen in the following examples:
+@startuml
+skinparam    sequenceArrowThickness 2
+skinparam    roundcorner 20
+skinparam    maxmessagesize 60
+skinparam    sequenceParticipant underline
+
+actor User
+participant "First Class" as A
+participant "Second Class" as B
+participant "Last Class" as C
+
+
+       PlantUML 언어참조가이드 (1.2019.9)                                                          21 / 171
+1.27 Skinparam                          1   시퀀스다이어그램
+
+
+
+
+User -> A: DoWork
+activate A
+
+A -> B: Create Request
+activate B
+
+B -> C: DoWork
+activate C
+C --> B: WorkDone
+destroy C
+
+B --> A: Request Created
+deactivate B
+
+A --> User: Done
+deactivate A
+
+@enduml
+
+
+
+
+@startuml
+skinparam backgroundColor #EEEBDC
+skinparam handwritten true
+
+skinparam sequence {
+ArrowColor DeepSkyBlue
+ActorBorderColor DeepSkyBlue
+LifeLineBorderColor blue
+LifeLineBackgroundColor #A9DCDF
+
+ParticipantBorderColor DeepSkyBlue
+ParticipantBackgroundColor DodgerBlue
+ParticipantFontName Impact
+ParticipantFontSize 17
+ParticipantFontColor #A9DCDF
+
+ActorBackgroundColor aqua
+ActorFontColor DeepSkyBlue
+
+
+     PlantUML 언어참조가이드 (1.2019.9)                22 / 171
+1.28 Changing padding                           1   시퀀스다이어그램
+
+
+ActorFontSize 17
+ActorFontName Aapex
+}
+
+actor User
+participant "First Class" as A
+participant "Second Class" as B
+participant "Last Class" as C
+
+User -> A: DoWork
+activate A
+
+A -> B: Create Request
+activate B
+
+B -> C: DoWork
+activate C
+C --> B: WorkDone
+destroy C
+
+B --> A: Request Created
+deactivate B
+
+A --> User: Done
+deactivate A
+
+@enduml
+
+
+
+
+1.28 Changing padding
+It is possible to tune some padding settings.
+@startuml
+skinparam ParticipantPadding 20
+skinparam BoxPadding 10
+
+box "Foo1"
+participant Alice1
+
+
+       PlantUML 언어참조가이드 (1.2019.9)                      23 / 171
+1.28 Changing padding              1   시퀀스다이어그램
+
+
+participant Alice2
+end box
+box "Foo2"
+participant Bob1
+participant Bob2
+end box
+Alice1 -> Bob1 : hello
+Alice1 -> Out : out
+@enduml
+
+
+
