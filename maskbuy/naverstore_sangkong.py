@@ -9,15 +9,23 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
 
-def buy(driver):
+def buy(driver, sleep_time=3):
     while True:
-        driver.get("https://smartstore.naver.com/sangkong/products/4762917002")     # 페이지 열기
-        # driver.get("https://smartstore.naver.com/hy_company/products/4594628495")   # 테스트
-        span_buy = WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.CLASS_NAME, "buy")))
+        try:
+            driver.get("https://smartstore.naver.com/sangkong/products/4762917002")     # 페이지 열기
+            # driver.get("https://smartstore.naver.com/hy_company/products/4594628495")   # 테스트
+            body = WebDriverWait(driver, 60).until(EC.presence_of_all_elements_located((By.TAG_NAME, "body")))
+            span_buy = body[0].find_element_by_class_name("buy")
+        except Exception as e:
+            print(f"{e}*** page load fail. wait {sleep_time}s *** \n")
+            time.sleep(sleep_time)
+            continue
 
         # 구매가능 여부 확인
         buy_button = span_buy.find_element_by_xpath("child::*")
         if buy_button.tag_name != "a":
+            print(f"*** buying button not clickable. wait {sleep_time}s *** \n")
+            time.sleep(sleep_time)
             continue
 
         # 옵션 선택
@@ -41,9 +49,9 @@ def buy(driver):
         all_agree = driver.find_element_by_id("allAgree")
         all_agree.click()
 
-        # # 주문하기
-        # txt_order = driver.find_element_by_class_name("txt_order")
-        # txt_order.click()
+        # 주문하기
+        txt_order = driver.find_element_by_class_name("txt_order")
+        txt_order.click()
 
         break
         
@@ -57,4 +65,4 @@ if __name__ == '__main__':
     chrome_options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
     driver = webdriver.Chrome(executable_path="../chromedrivers/chromedriver80.exe", options=chrome_options)
 
-    buy(driver)
+    buy(driver, 5)
