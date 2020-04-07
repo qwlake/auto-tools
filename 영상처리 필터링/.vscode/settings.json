@@ -1,0 +1,7 @@
+{ 
+    "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe", 
+    "code-runner.executorMap": {
+        "python": "cd $dirWithoutTrailingSlash && $pythonPath -u $fullFileName < input.txt",
+    },
+    "code-runner.runInTerminal": true,
+}
