@@ -4,26 +4,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
 
-driver = webdriver.Chrome(executable_path="*")
+driver = webdriver.Chrome(executable_path="../chromedrivers/chromedriver80.exe")
 html = driver.page_source
-
-driver.get("http://everytime.co.kr")
-driver.find_element_by_class_name("login").click()
-driver.find_element_by_name("userid").send_keys("*")
-driver.find_element_by_name("password").send_keys("*")
-driver.find_element_by_class_name("submit").find_element_by_tag_name("input").click()
-
-driver.find_element_by_class_name("mycommentarticle").click()
-article_list = driver.find_elements_by_class_name("article")
-
-for article in article_list:
-    article.send_keys(Keys.CONTROL + "\n")
-    driver.switch_to.window(driver.window_handles[-1])
-    
-    
-
-
 driver.switch_to.frame("Main")
 driver.find_element_by_id("USER_ID").send_keys('*')
 driver.find_element_by_id("PWD").send_keys('*')
